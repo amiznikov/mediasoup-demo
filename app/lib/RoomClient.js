@@ -247,7 +247,10 @@ export default class RoomClient
 		store.dispatch(
 			stateActions.setRoomState('connecting'));
 
-		this._protoo.on('open', () => this._joinRoom());
+		this._protoo.on('open', () => {
+			
+			this._joinRoom()
+		});
 
 		this._protoo.on('failed', () =>
 		{

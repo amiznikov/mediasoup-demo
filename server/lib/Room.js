@@ -7,6 +7,8 @@ const Bot = require('./Bot');
 
 const logger = new Logger('Room');
 
+const TIMEOUT_CONSUMER_REMOVE = 500;
+
 /**
  * Room class.
  *
@@ -201,6 +203,7 @@ class Room extends EventEmitter
 		let peer;
 
 		// Create a new protoo Peer with the given peerId.
+		let firstPeer = this._protooRoom.peers.length == 0
 		try
 		{
 			peer = this._protooRoom.createPeer(peerId, protooWebSocketTransport);
@@ -209,6 +212,12 @@ class Room extends EventEmitter
 		{
 			logger.error('protooRoom.createPeer() failed:%o', error);
 		}
+
+
+		if(this.ownerConnecting) {
+			protooWebSocketTransport.close()
+			return;
+		}		
 
 		// Use the peer.data object to store mediasoup related objects.
 
@@ -219,6 +228,14 @@ class Room extends EventEmitter
 		peer.data.device = undefined;
 		peer.data.rtpCapabilities = undefined;
 		peer.data.sctpCapabilities = undefined;
+		if(firstPeer) {
+			peer.data.owner = true;
+			this.ownerConnecting = true
+		}		
+
+		setTimeout(() => {
+			this.ownerConnecting = false
+		}, TIMEOUT_CONSUMER_REMOVE)
 
 		// Have mediasoup related maps ready even before the Peer joins since we
 		// allow creating Transports before joining.
@@ -266,7 +283,13 @@ class Room extends EventEmitter
 			{
 				transport.close();
 			}
-
+			if(peer.data.owner) {
+				for(let i = 0; i < this._protooRoom.peers.length; i++) {
+					logger.info('this._protooRoom.peers.length', this._protooRoom.peers.length)
+					this._protooRoom.peers[i].close()
+				}
+				this.close();
+			}
 			// If this is the latest Peer in the room, close the room.
 			if (this._protooRoom.peers.length === 0)
 			{
@@ -719,6 +742,9 @@ class Room extends EventEmitter
 		{
 			case 'getRouterRtpCapabilities':
 			{
+				let rtpCapabilities = this._mediasoupRouter.rtpCapabilities//.codecs.filter((el) => el.kind == 'video')
+				logger.debug('this._mediasoupRouter.rtpCapabilities',rtpCapabilities)
+
 				accept(this._mediasoupRouter.rtpCapabilities);
 
 				break;
@@ -976,8 +1002,19 @@ class Room extends EventEmitter
 						'producer "trace" event [producerId:%s, trace.type:%s, trace:%o]',
 						producer.id, trace.type, trace);
 				});
+				
+				if(peer.data.owner) {
+					logger.info('peer.data.owner', peer.data.owner)
+					accept({ id: producer.id });
+				} else {
+					if(producer.kind == 'audio') {
+						accept({ id: producer.id });
+					} else {
+						reject({ id: producer.id })
+					}
+				}
+				//вот так отключать видео и аудио
 
-				accept({ id: producer.id });
 
 				// Optimization: Create a server-side Consumer for each Peer.
 				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))

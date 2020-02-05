@@ -49,7 +49,7 @@ const buffer = require('vinyl-buffer');
 const del = require('del');
 const mkdirp = require('mkdirp');
 const ncp = require('ncp');
-const eslint = require('gulp-eslint');
+// const eslint = require('gulp-eslint');
 const stylus = require('gulp-stylus');
 const cssBase64 = require('gulp-css-base64');
 const nib = require('nib');
@@ -85,6 +85,8 @@ function bundle(options)
 			entries      : PKG.main,
 			extensions   : [ '.js', '.jsx' ],
 			// required for sourcemaps (must be false otherwise).
+			// debug        : false,
+			sourceMaps: true,
 			debug        : process.env.NODE_ENV === 'development',
 			// required for watchify.
 			cache        : {},
@@ -134,20 +136,20 @@ function bundle(options)
 
 gulp.task('clean', () => del(OUTPUT_DIR, { force: true }));
 
-gulp.task('lint', () =>
-{
-	const src =
-	[
-		'gulpfile.js',
-		'lib/**/*.js',
-		'lib/**/*.jsx'
-	];
+// gulp.task('lint', () =>
+// {
+// 	const src =
+// 	[
+// 		'gulpfile.js',
+// 		'lib/**/*.js',
+// 		'lib/**/*.jsx'
+// 	];
 
-	return gulp.src(src)
-		.pipe(plumber())
-		.pipe(eslint())
-		.pipe(eslint.format());
-});
+// 	return gulp.src(src)
+// 		.pipe(plumber())
+// 		.pipe(eslint({'no-debugger': false}))
+// 		.pipe(eslint.format());
+// });
 
 gulp.task('css', () =>
 {
@@ -201,7 +203,6 @@ gulp.task('bundle:watch', () =>
 
 gulp.task('dist', gulp.series(
 	'clean',
-	'lint',
 	'bundle',
 	'html',
 	'css',
@@ -226,16 +227,13 @@ gulp.task('watch', (done) =>
 	));
 
 	// Watch changes in JS files.
-	gulp.watch([ 'gulpfile.js', 'lib/**/*.js', 'lib/**/*.jsx' ], gulp.series(
-		'lint'
-	));
+	gulp.watch([ 'gulpfile.js', 'lib/**/*.js', 'lib/**/*.jsx' ]);
 
 	done();
 });
 
 gulp.task('browser:base', gulp.series(
 	'clean',
-	'lint',
 	'bundle:watch',
 	'html',
 	'css',
