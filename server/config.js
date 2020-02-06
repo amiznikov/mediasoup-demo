@@ -23,8 +23,8 @@ module.exports =
 		// NOTE: Set your own valid certificate files.
 		tls        :
 		{
-			cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
-			key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
+			cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
+			key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
 		}
 	},
 	// mediasoup settings.
