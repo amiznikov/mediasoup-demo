@@ -1,6 +1,5 @@
 node_modules/
 
-/server/public/
 /server/mediasoup_valgrind_*
 
 /.vscode/
