@@ -13,16 +13,18 @@ const os = require('os');
 module.exports =
 {
 	// Listening hostname (just for `gulp live` task).
-	domain : process.env.DOMAIN || '0.0.0.0',
+	domain : process.env.DOMAIN || '18.194.71.93',
 	// Signaling settings (protoo WebSocket server and HTTP API server).
 	https  :
 	{
-		listenIp   : '0.0.0.0',
+		listenIp   : '18.194.71.93',
 		// NOTE: Don't change listenPort (client app assumes 4443).
 		listenPort : process.env.PROTOO_LISTEN_PORT || 4443,
 		// NOTE: Set your own valid certificate files.
 		tls        :
 		{
+			// cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
+			// key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
 			cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
 			key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
 		}
@@ -120,7 +122,7 @@ module.exports =
 			listenIps :
 			[
 				{
-					ip          : process.env.MEDIASOUP_LISTEN_IP || '0.0.0.0',
+					ip          : process.env.MEDIASOUP_LISTEN_IP || '18.194.71.93',
 					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 				}
 			],
@@ -137,7 +139,7 @@ module.exports =
 		{
 			listenIp :
 			{
-				ip          : process.env.MEDIASOUP_LISTEN_IP || '0.0.0.0',
+				ip          : process.env.MEDIASOUP_LISTEN_IP || '18.194.71.93',
 				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 			},
 			maxSctpMessageSize : 262144
