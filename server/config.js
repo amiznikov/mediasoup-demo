@@ -23,10 +23,10 @@ module.exports =
 		// NOTE: Set your own valid certificate files.
 		tls        :
 		{
-			// cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
-			// key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
-			cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
-			key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
+			cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
+			key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
+			// cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
+			// key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
 		}
 	},
 	// mediasoup settings.
@@ -123,7 +123,7 @@ module.exports =
 			[
 				{
 					ip          : process.env.MEDIASOUP_LISTEN_IP || '172.31.43.124',
-					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
+					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP || '18.194.71.93'
 				}
 			],
 			initialAvailableOutgoingBitrate : 1000000,
@@ -140,7 +140,7 @@ module.exports =
 			listenIp :
 			{
 				ip          : process.env.MEDIASOUP_LISTEN_IP || '172.31.43.124',
-				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
+				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP || "18.194.71.93"
 			},
 			maxSctpMessageSize : 262144
 		}
