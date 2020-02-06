@@ -13,7 +13,7 @@ const os = require('os');
 module.exports =
 {
 	// Listening hostname (just for `gulp live` task).
-	domain : process.env.DOMAIN || '172.31.43.124',
+	domain : process.env.DOMAIN || '18.194.71.93',
 	// Signaling settings (protoo WebSocket server and HTTP API server).
 	https  :
 	{
