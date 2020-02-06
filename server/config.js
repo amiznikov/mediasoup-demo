@@ -120,7 +120,7 @@ module.exports =
 			listenIps :
 			[
 				{
-					ip          : process.env.MEDIASOUP_LISTEN_IP || '18.194.71.93',
+					ip          : process.env.MEDIASOUP_LISTEN_IP || '0.0.0.0',
 					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 				}
 			],
@@ -137,7 +137,7 @@ module.exports =
 		{
 			listenIp :
 			{
-				ip          : process.env.MEDIASOUP_LISTEN_IP || '18.194.71.93',
+				ip          : process.env.MEDIASOUP_LISTEN_IP || '0.0.0.0',
 				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 			},
 			maxSctpMessageSize : 262144
