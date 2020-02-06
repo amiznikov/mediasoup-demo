@@ -12,6 +12,7 @@ console.log('config.js:\n%s', JSON.stringify(config, null, '  '));
 
 const fs = require('fs');
 const https = require('https');
+var http = require('http');
 const url = require('url');
 const protoo = require('protoo-server');
 const mediasoup = require('mediasoup');
@@ -36,6 +37,10 @@ const rooms = new Map();
 // HTTPS server.
 // @type {https.Server}
 let httpsServer;
+
+// HTTP server.
+// @type {https.Server}
+let httpServer;
 
 // Express application.
 // @type {Function}
@@ -366,17 +371,17 @@ async function runHttpsServer()
 	logger.info('running an HTTPS server...');
 
 	// HTTPS server for the protoo WebSocket server.
-	const tls =
-	{
-		cert : fs.readFileSync(config.https.tls.cert),
-		key  : fs.readFileSync(config.https.tls.key)
-	};
+	// const tls =
+	// {
+	// 	cert : fs.readFileSync(config.https.tls.cert),
+	// 	key  : fs.readFileSync(config.https.tls.key)
+	// };
 
-	httpsServer = https.createServer(tls, expressApp);
+	httpServer = http.createServer(expressApp);
 
 	await new Promise((resolve) =>
 	{
-		httpsServer.listen(
+		httpServer.listen(
 			Number(config.https.listenPort), config.https.listenIp, resolve);
 	});
 }
@@ -389,7 +394,7 @@ async function runProtooWebSocketServer()
 	logger.info('running protoo WebSocketServer...');
 
 	// Create the protoo WebSocket server.
-	protooWebSocketServer = new protoo.WebSocketServer(httpsServer,
+	protooWebSocketServer = new protoo.WebSocketServer(httpServer,
 		{
 			maxReceivedFrameSize     : 960000, // 960 KBytes.
 			maxReceivedMessageSize   : 960000,
