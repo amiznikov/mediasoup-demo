@@ -6,8 +6,8 @@ process.env.DEBUG = process.env.DEBUG || '*INFO* *WARN* *ERROR*';
 const config = require('./config');
 
 /* eslint-disable no-console */
-console.log('process.env.DEBUG:', process.env.DEBUG);
-console.log('config.js:\n%s', JSON.stringify(config, null, '  '));
+('process.env.DEBUG:', process.env.DEBUG);
+('config.js:\n%s', JSON.stringify(config, null, '  '));
 /* eslint-enable no-console */
 
 const fs = require('fs');

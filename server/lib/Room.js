@@ -845,6 +845,50 @@ class Room extends EventEmitter
 				break;
 			}
 
+			case 'disableCameras': 
+			{
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					otherPeer.notify('needToSwitchOffCamera', { peerId: peer.id })
+						.catch(() => {});
+				}	
+				accept()						
+				break;
+			}
+
+			case 'enableCameras': 
+			{
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					otherPeer.notify('needToSwitchOnCamera', { peerId: peer.id })
+						.catch(() => {});
+				}	
+				accept()						
+				break;
+			}
+
+			case 'disableMics': 
+			{
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					otherPeer.notify('needToSwitchOffMic', { peerId: peer.id })
+						.catch(() => {});
+				}	
+				accept()			
+				break;
+			}
+
+			case 'enableMics': 
+			{
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					otherPeer.notify('needToSwitchOnMic', { peerId: peer.id })
+						.catch(() => {});
+				}
+				accept()							
+				break;
+			}
+
 			case 'createWebRtcTransport':
 			{
 				// NOTE: Don't require that the Peer is joined here, so the client can
@@ -905,7 +949,8 @@ class Room extends EventEmitter
 						iceParameters  : transport.iceParameters,
 						iceCandidates  : transport.iceCandidates,
 						dtlsParameters : transport.dtlsParameters,
-						sctpParameters : transport.sctpParameters
+						sctpParameters : transport.sctpParameters,
+						owner: !!peer.data.owner
 					});
 
 				const { maxIncomingBitrate } = config.mediasoup.webRtcTransportOptions;
@@ -1002,15 +1047,15 @@ class Room extends EventEmitter
 						'producer "trace" event [producerId:%s, trace.type:%s, trace:%o]',
 						producer.id, trace.type, trace);
 				});
-				
-				if(peer.data.owner) {
-					logger.info('peer.data.owner', peer.data.owner)
+
+				if(peer.data.owner || appData.fromOwner) {
 					accept({ id: producer.id });
 				} else {
 					if(producer.kind == 'audio') {
 						accept({ id: producer.id });
 					} else {
 						reject({ id: producer.id })
+						return;
 					}
 				}
 				//вот так отключать видео и аудио

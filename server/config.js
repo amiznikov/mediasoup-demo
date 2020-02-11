@@ -13,20 +13,20 @@ const os = require('os');
 module.exports =
 {
 	// Listening hostname (just for `gulp live` task).
-	domain : process.env.DOMAIN || '18.194.71.93',
+	domain : process.env.DOMAIN || 'localhost',
 	// Signaling settings (protoo WebSocket server and HTTP API server).
 	https  :
 	{
-		listenIp   : '172.31.43.124',
+		listenIp   : '0.0.0.0',
 		// NOTE: Don't change listenPort (client app assumes 4443).
 		listenPort : process.env.PROTOO_LISTEN_PORT || 4443,
 		// NOTE: Set your own valid certificate files.
 		tls        :
 		{
-			// cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
-			// key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
-			cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
-			key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
+			cert : process.env.HTTPS_CERT_FULLCHAIN || `${__dirname}/certs/fullchain.crt`,
+			key  : process.env.HTTPS_CERT_PRIVKEY || `${__dirname}/certs/privkey.key`
+			// cert : process.env.HTTPS_CERT_FULLCHAIN || `/etc/letsencrypt/live/media5.granatum.solutions/fullchain.pem`,
+			// key  : process.env.HTTPS_CERT_PRIVKEY || `/etc/letsencrypt/live/media5.granatum.solutions/privkey.pem`
 		}
 	},
 	// mediasoup settings.
@@ -122,8 +122,8 @@ module.exports =
 			listenIps :
 			[
 				{
-					ip          : process.env.MEDIASOUP_LISTEN_IP || '172.31.43.124',
-					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP || '18.194.71.93'
+					ip          : process.env.MEDIASOUP_LISTEN_IP || '192.168.1.2',
+					announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 				}
 			],
 			initialAvailableOutgoingBitrate : 1000000,
@@ -139,8 +139,8 @@ module.exports =
 		{
 			listenIp :
 			{
-				ip          : process.env.MEDIASOUP_LISTEN_IP || '172.31.43.124',
-				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP || "18.194.71.93"
+				ip          : process.env.MEDIASOUP_LISTEN_IP,
+				announcedIp : process.env.MEDIASOUP_ANNOUNCED_IP
 			},
 			maxSctpMessageSize : 262144
 		}

@@ -11,7 +11,7 @@ import { Appear } from './transitions';
 import Me from './Me';
 import ChatInput from './ChatInput';
 import Peers from './Peers';
-import Stats from './Stats';
+// import Stats from './Stats';
 import Notifications from './Notifications';
 import NetworkThrottle from './NetworkThrottle';
 
@@ -82,18 +82,24 @@ class Room extends React.Component
 						<ChatInput />
 					</div>
 
-					<div className='sidebar'>
+					<div className={classnames('sidebar', {
+						showed: me.owner
+					})}>
 						<div
 							className={classnames('button', 'hide-videos', {
-								on       : me.audioOnly,
-								disabled : me.audioOnlyInProgress
+								on       : me.audioOnly
 							})}
 							data-tip={'Show/hide participants\' video'}
 							onClick={() =>
 							{
+								// me.audioOnly
+								// 	? roomClient.disableAudioOnly()
+								// 	: roomClient.enableAudioOnly();
+
+								// ('me.audioOnly',me.audioOnly)
 								me.audioOnly
-									? roomClient.disableAudioOnly()
-									: roomClient.enableAudioOnly();
+									? roomClient.enableCameras()
+									: roomClient.disableCameras()
 							}}
 						/>
 
@@ -104,9 +110,13 @@ class Room extends React.Component
 							data-tip={'Mute/unmute participants\' audio'}
 							onClick={() =>
 							{
+								// me.audioMuted
+								// 	? roomClient.unmuteAudio()
+								// 	: roomClient.muteAudio();
+
 								me.audioMuted
-									? roomClient.unmuteAudio()
-									: roomClient.muteAudio();
+									? roomClient.enableMics()
+									: roomClient.disableMics();
 							}}
 						/>
 

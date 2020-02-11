@@ -54,6 +54,14 @@ export const setMediaCapabilities = ({ canSendMic, canSendWebcam }) =>
 	};
 };
 
+export const setRule = ({ owner }) =>
+{
+	return {
+		type    : 'SET_RULE',
+		payload : { owner }
+	};
+};
+
 export const setCanChangeWebcam = (flag) =>
 {
 	return {

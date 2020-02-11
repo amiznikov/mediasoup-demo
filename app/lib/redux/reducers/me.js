@@ -12,7 +12,8 @@ const initialState =
 	audioOnly            : false,
 	audioOnlyInProgress  : false,
 	audioMuted           : false,
-	restartIceInProgress : false
+	restartIceInProgress : false,
+	owner				 : false
 };
 
 const me = (state = initialState, action) =>
@@ -46,6 +47,13 @@ const me = (state = initialState, action) =>
 			const { peerId, displayName, displayNameSet, device } = action.payload;
 
 			return { ...state, id: peerId, displayName, displayNameSet, device };
+		}
+
+		case 'SET_RULE':
+		{
+			const { owner } = action.payload;
+
+			return { ...state, owner };
 		}
 
 		case 'SET_MEDIA_CAPABILITIES':

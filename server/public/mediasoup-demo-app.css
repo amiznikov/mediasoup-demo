@@ -468,12 +468,7 @@ body {
   z-index: 101;
   top: calc(50% - 60px);
   height: 120px;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: box;
-  display: flex;
+  display: none;
   -webkit-box-orient: vertical;
   -moz-box-orient: vertical;
   -o-box-orient: vertical;
@@ -492,6 +487,14 @@ body {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
+}
+#mediasoup-demo-app-container [data-component='Room'] > .sidebar.showed {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
 }
 @media (min-device-width: 721px) {
   #mediasoup-demo-app-container [data-component='Room'] > .sidebar {

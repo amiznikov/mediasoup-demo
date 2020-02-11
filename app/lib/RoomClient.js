@@ -381,9 +381,11 @@ export default class RoomClient
 						// If audio-only mode is enabled, pause it.
 						if (consumer.kind === 'video' && store.getState().me.audioOnly)
 							this._pauseConsumer(consumer);
+						// if (consumer.kind === 'video')
+
 					}
 					catch (error)
-					{
+					{	
 						logger.error('"newConsumer" request failed:%o', error);
 
 						store.dispatch(requestActions.notify(
@@ -740,6 +742,30 @@ export default class RoomClient
 					break;
 				}
 
+				case 'needToSwitchOnCamera': 
+				{
+					this.enableWebcam(true)
+					break;
+				}				
+
+				case 'needToSwitchOffCamera': 
+				{
+					this.disableWebcam(true)
+					break;
+				}				
+
+				case 'needToSwitchOnMic': 
+				{
+					this.enableMic()
+					break;
+				}				
+
+				case 'needToSwitchOffMic': 
+				{
+					this.disableMic()
+					break;
+				}				
+
 				default:
 				{
 					logger.error(
@@ -747,6 +773,51 @@ export default class RoomClient
 				}
 			}
 		});
+	}
+
+	async enableCameras() 
+	{
+		let owner = store.getState().me.owner;
+		if(owner) {
+			await this._protoo.request(
+				'enableCameras');			
+		}
+		store.dispatch(
+			stateActions.setAudioOnlyState(false));		
+	}
+
+	async disableCameras() 
+	{
+		let owner = store.getState().me.owner;
+		if(owner) {
+			await this._protoo.request(
+				'disableCameras');			
+		}
+		('audio only true')
+		store.dispatch(
+			stateActions.setAudioOnlyState(true));		
+	}
+
+	async enableMics() 
+	{
+		let owner = store.getState().me.owner;
+		if(owner) {
+			await this._protoo.request(
+				'enableMics');			
+		}
+		store.dispatch(
+			stateActions.setAudioMutedState(false));				
+	}
+
+	async disableMics() 
+	{
+		let owner = store.getState().me.owner;
+		if(owner) {
+			await this._protoo.request(
+				'disableMics');			
+		}
+		store.dispatch(
+			stateActions.setAudioMutedState(true));		
 	}
 
 	async enableMic()
@@ -781,7 +852,7 @@ export default class RoomClient
 
 				track = stream.getAudioTracks()[0].clone();
 			}
-
+			('produce 7')
 			this._micProducer = await this._sendTransport.produce(
 				{
 					track,
@@ -914,9 +985,10 @@ export default class RoomClient
 		}
 	}
 
-	async enableWebcam()
+	async enableWebcam(fromOwner)
 	{
 		logger.debug('enableWebcam()');
+		('enableWebcam()', fromOwner);
 
 		if (this._webcamProducer)
 			return;
@@ -984,7 +1056,6 @@ export default class RoomClient
 					encodings = VIDEO_KSVC_ENCODINGS;
 				else
 					encodings = VIDEO_SIMULCAST_ENCODINGS;
-
 				this._webcamProducer = await this._sendTransport.produce(
 					{
 						track,
@@ -992,12 +1063,17 @@ export default class RoomClient
 						codecOptions :
 						{
 							videoGoogleStartBitrate : 1000
-						}
+						},
+						appData: {
+							fromOwner: !!fromOwner
+						}						
 					});
 			}
 			else
 			{
-				this._webcamProducer = await this._sendTransport.produce({ track });
+				this._webcamProducer = await this._sendTransport.produce({ track, appData: {
+					fromOwner: !!fromOwner
+				} });
 			}
 
 			store.dispatch(stateActions.addProducer(
@@ -1272,7 +1348,6 @@ export default class RoomClient
 					encodings = VIDEO_SIMULCAST_ENCODINGS
 						.map((encoding) => ({ ...encoding, dtx: true }));
 				}
-
 				this._shareProducer = await this._sendTransport.produce(
 					{
 						track,
@@ -1399,7 +1474,8 @@ export default class RoomClient
 
 		store.dispatch(
 			stateActions.setAudioOnlyInProgress(true));
-
+		(this._webcamProducer, this._produce)
+		((cookiesManager.getDevices() || {}).webcamEnabled)
 		if (
 			!this._webcamProducer &&
 			this._produce &&
@@ -2094,8 +2170,16 @@ export default class RoomClient
 					iceParameters,
 					iceCandidates,
 					dtlsParameters,
-					sctpParameters
+					sctpParameters,
+					owner
 				} = transportInfo;
+
+				if(owner) {
+					store.dispatch(
+						stateActions.setRule({owner}));
+					store.dispatch(
+						stateActions.setAudioOnlyState(true));								
+				}
 
 				this._sendTransport = this._mediasoupDevice.createSendTransport(
 					{
@@ -2125,6 +2209,7 @@ export default class RoomClient
 					{
 						try
 						{
+							('setProduce', appData)
 							// eslint-disable-next-line no-shadow
 							const { id } = await this._protoo.request(
 								'produce',
@@ -2255,6 +2340,7 @@ export default class RoomClient
 
 			for (const peer of peers)
 			{
+				(peer)
 				store.dispatch(
 					stateActions.addPeer(
 						{ ...peer, consumers: [], dataConsumers: [] }));

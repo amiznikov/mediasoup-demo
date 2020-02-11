@@ -93,7 +93,7 @@ class Me extends React.Component
 
 						<div
 							className={classnames('button', 'webcam', webcamState, {
-								disabled : me.webcamInProgress || me.shareInProgress
+								disabled : !me.owner || me.webcamInProgress || me.shareInProgress
 							})}
 							onClick={() =>
 							{
