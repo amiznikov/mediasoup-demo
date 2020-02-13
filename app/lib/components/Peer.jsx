@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as appPropTypes from './appPropTypes';
 import { withRoomContext } from '../RoomContext';
 import * as stateActions from '../redux/stateActions';
+import classnames from 'classnames';
 import PeerView from './PeerView';
 
 const Peer = (props) =>
@@ -14,6 +15,7 @@ const Peer = (props) =>
 		audioConsumer,
 		videoConsumer,
 		audioMuted,
+		owner,
 		faceDetection,
 		onSetStatsPeerId
 	} = props;
@@ -33,13 +35,40 @@ const Peer = (props) =>
 	return (
 		<div data-component='Peer'>
 			<div className='indicators'>
-				<If condition={!audioEnabled}>
-					<div className='icon mic-off' />
-				</If>
+				<If condition={!owner}>
+					<If condition={!audioEnabled}>
+						<div className={classnames('icon', 'mic-off', {
+							'clickable': owner
+						})} />	
+					</If>
 
-				<If condition={!videoConsumer}>
-					<div className='icon webcam-off' />
-				</If>
+					<If condition={!videoConsumer}>
+						<div className={classnames('icon', 'webcam-off')} />
+					</If>
+				</If>	
+				<If condition={owner}>
+					<div className={classnames('icon', 'mic', {
+						'on': audioEnabled
+					})} 
+					onClick={() =>
+						{
+							audioEnabled
+								? roomClient.disableMicConsumerById(peer.id)
+								: roomClient.enableMicConsumerById(peer.id)								
+						}}
+					/>					
+					<div className={classnames('icon', 'webcam', {
+						'on': videoConsumer
+					})} 
+					onClick={() =>
+						{
+							videoConsumer
+								? roomClient.disableCameraConsumerById(peer.id)
+								: roomClient.enableCameraConsumerById(peer.id)
+						}}
+					/>							
+							
+				</If>			
 			</div>
 
 			<PeerView
@@ -99,6 +128,7 @@ Peer.propTypes =
 	audioConsumer    : appPropTypes.Consumer,
 	videoConsumer    : appPropTypes.Consumer,
 	audioMuted       : PropTypes.bool,
+	owner            : PropTypes.bool,
 	faceDetection    : PropTypes.bool.isRequired,
 	onSetStatsPeerId : PropTypes.func.isRequired
 };
@@ -118,6 +148,7 @@ const mapStateToProps = (state, { id }) =>
 		peer,
 		audioConsumer,
 		videoConsumer,
+		owner: !!me.owner,
 		audioMuted    : me.audioMuted,
 		faceDetection : state.room.faceDetection
 	};

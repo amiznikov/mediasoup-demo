@@ -45,6 +45,22 @@
 			&.webcam-off {
 				background-image: url('/resources/images/icon_remote_webcam_white_off.svg');
 			}
+
+			&.mic {
+				cursor: pointer;
+				background-image: url('/resources/images/icon_mic_white_unsupported.svg');
+				&.on {					
+					background-image: url('/resources/images/icon_mic_black_on.svg');
+				}
+			}
+
+			&.webcam {
+				cursor: pointer;
+				background-image: url('/resources/images/icon_webcam_white_unsupported.svg');
+				&.on {
+					background-image: url('/resources/images/icon_webcam_black_on.svg');
+				}
+			}
 		}
 	}
 

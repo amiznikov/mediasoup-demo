@@ -742,24 +742,29 @@ export default class RoomClient
 					break;
 				}
 
+				case 'enableCamFromOwner': 
 				case 'needToSwitchOnCamera': 
 				{
+
 					this.enableWebcam(true)
 					break;
-				}				
-
+				}	
+				
+				case 'disableCamFromOwner': 
 				case 'needToSwitchOffCamera': 
 				{
 					this.disableWebcam(true)
 					break;
 				}				
 
+				case 'enableMicFromOwner': 
 				case 'needToSwitchOnMic': 
 				{
 					this.enableMic()
 					break;
 				}				
 
+				case 'disableMicFromOwner': 
 				case 'needToSwitchOffMic': 
 				{
 					this.disableMic()
@@ -796,6 +801,35 @@ export default class RoomClient
 		('audio only true')
 		store.dispatch(
 			stateActions.setAudioOnlyState(true));		
+	}
+
+	async enableCameraConsumerById(id) 
+	{
+		await this._protoo.request(
+			'enableCameraByID', { id });	
+
+		store.dispatch(
+			stateActions.setAudioOnlyState(false));							
+	}
+
+	async disableCameraConsumerById(id) 
+	{
+		await this._protoo.request(
+				'disableCameraByID', { id });	
+		store.dispatch(
+			stateActions.setAudioMutedState(false));						
+	}
+
+	async enableMicConsumerById(id) 
+	{
+		await this._protoo.request(
+			'enableMicByID', { id });			
+	}
+
+	async disableMicConsumerById(id) 
+	{
+		await this._protoo.request(
+				'disableMicByID', { id });			
 	}
 
 	async enableMics() 

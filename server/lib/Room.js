@@ -856,6 +856,68 @@ class Room extends EventEmitter
 				break;
 			}
 
+			case 'enableCameraByID': 
+			{
+				let id = request.data.id;
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{	
+					console.log(otherPeer.id)
+					if(otherPeer.id == id) {
+						otherPeer.notify('enableCamFromOwner', { peerId: peer.id })
+						.catch(() => {});
+					}
+
+				}	
+				accept()				
+				break;
+			}
+
+			case 'disableCameraByID': 
+			{
+				let id = request.data.id;
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					if(otherPeer.id == id) {
+						otherPeer.notify('disableCamFromOwner', { peerId: peer.id })
+						.catch(() => {});
+					}
+
+				}	
+				accept()				
+				break;
+			}
+
+			case 'enableMicByID': 
+			{
+				let id = request.data.id;
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{	
+					console.log(otherPeer.id)
+					if(otherPeer.id == id) {
+						otherPeer.notify('enableMicFromOwner', { peerId: peer.id })
+						.catch(() => {});
+					}
+
+				}	
+				accept()				
+				break;
+			}
+
+			case 'disableMicByID': 
+			{
+				let id = request.data.id;
+				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+				{
+					if(otherPeer.id == id) {
+						otherPeer.notify('disableMicFromOwner', { peerId: peer.id })
+						.catch(() => {});
+					}
+
+				}	
+				accept()				
+				break;
+			}
+
 			case 'enableCameras': 
 			{
 				for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
